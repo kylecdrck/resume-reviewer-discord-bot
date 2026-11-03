@@ -11,7 +11,7 @@ no profile connects to Postgres. Two local profiles are available:
 ## Prerequisites
 - **Java 21** + **Maven** (or use `.\mvnw.cmd`)
 - **PostgreSQL** running locally (for the default config and `local-tst`), or
-  set `DB_URL`/`DB_USERNAME`/`DB_PASSWORD` to point elsewhere
+  set `PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD` to point elsewhere
 
 ---
 
@@ -68,13 +68,15 @@ Everything from the `local` table above, plus:
 
 | Variable | Required | Default |
 |---|---|---|
-| `DB_URL` | no | `jdbc:postgresql://localhost:5432/resume_reviewer` |
-| `DB_USERNAME` | **yes** | *(blank)* |
-| `DB_PASSWORD` | **yes** | *(blank)* |
+| `PGHOST` | no | `localhost` |
+| `PGPORT` | no | `5432` |
+| `PGDATABASE` | no | `resume_reviewer` |
+| `PGUSER` | **yes** | *(blank)* |
+| `PGPASSWORD` | **yes** | *(blank)* |
 
 ```powershell
-$env:DB_USERNAME = "postgres"
-$env:DB_PASSWORD = "yourpassword"
+$env:PGUSER = "postgres"
+$env:PGPASSWORD = "yourpassword"
 $env:DISCORD_TOKEN = "Mz..."
 $env:LLM_API_KEY = "sk-..."
 ```
@@ -92,7 +94,7 @@ Liquibase creates the schema automatically on first run.
 ## Production
 
 No profile is set in production. The app connects to PostgreSQL via
-`DB_URL`/`DB_USERNAME`/`DB_PASSWORD` and **Liquibase runs on every startup**
+`PGHOST`/`PGPORT`/`PGDATABASE`/`PGUSER`/`PGPASSWORD` and **Liquibase runs on every startup**
 (`spring.liquibase.enabled` defaults to `true`), applying any pending changesets
 before Hibernate validates the schema. Set `LIQUIBASE_ENABLED=false` to skip it.
 

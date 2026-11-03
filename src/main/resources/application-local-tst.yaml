@@ -1,14 +1,13 @@
 # Local testing profile.
 #
 # Same as `local` but connects to the actual (PostgreSQL) database instead of an
-# in-memory H2. The datasource is the base default (see application.yaml); fill
-# in the blank values below, or set the matching environment variables
-# (DB_URL, DB_USERNAME, DB_PASSWORD).
+# in-memory H2. The datasource is the base default (see application.yaml); set
+# PGHOST, PGPORT, PGDATABASE, PGUSER and PGPASSWORD.
 #
 # Activate with:  --spring.profiles.active=local-tst
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/resume_reviewer}
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:resume_reviewer}
     driver-class-name: org.postgresql.Driver
-    username: ${DB_USERNAME:}
-    password: ${DB_PASSWORD:}
+    username: ${PGUSER:}
+    password: ${PGPASSWORD:}

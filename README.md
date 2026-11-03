@@ -117,7 +117,7 @@ All settings are environment variables with defaults in `src/main/resources/appl
 | `REVIEW_CONFIRMATION_TIMEOUT_SECONDS` | `45` | How long the Continue/Cancel prompt stays open |
 | `BOT_CONFIG_FORM_TIMEOUT_SECONDS` | `300` | How long the `/resume-review config` form stays open |
 | `BOT_CONFIG_CACHE_TTL_SECONDS` | `60` | How long the channel allow-list cache is valid |
-| `DB_URL` / `DB_USERNAME` / `DB_PASSWORD` | — | PostgreSQL connection (only for the `local-tst` profile) |
+| `PGHOST` / `PGPORT` / `PGDATABASE` / `PGUSER` / `PGPASSWORD` | `localhost` / `5432` / `resume_reviewer` / *(blank)* / *(blank)* | PostgreSQL connection (used by default and by the `local-tst` profile) |
 
 ## Project layout
 

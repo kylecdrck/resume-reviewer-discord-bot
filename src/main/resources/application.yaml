@@ -3,10 +3,10 @@ spring:
     name: resume-reviewer
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/resume_reviewer}
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:resume_reviewer}
     driver-class-name: org.postgresql.Driver
-    username: ${DB_USERNAME:}
-    password: ${DB_PASSWORD:}
+    username: ${PGUSER:}
+    password: ${PGPASSWORD:}
 
   jpa:
     hibernate:

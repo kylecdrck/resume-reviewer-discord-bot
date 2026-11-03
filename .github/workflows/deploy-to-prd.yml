@@ -28,7 +28,7 @@ jobs:
     name: Deploy application to PRODUCTION env
     needs: test
     runs-on: ubuntu-latest
-    environment: prd
+    environment: Railway Deployment
     permissions:
       contents: read
       packages: write

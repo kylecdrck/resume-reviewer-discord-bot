@@ -52,7 +52,7 @@ attachment: FOR_REVIEW-my-resume.pdf
 ```
 
 - Only the **starter message** of a new post is inspected; replies never re-trigger.
-- The post must be created by the thread owner in a forum on the allow-list.
+- The post must be created in a forum on the allow-list.
 - Exactly one attachment must be a PDF whose name starts with `FOR_REVIEW_` (case-sensitive) and is ≤ 5MB.
 - `REVIEW_ROLES:` is optional, must start a line, is case-sensitive, and takes up to 5 comma-separated roles. Only the first matching line is used.
 - The confirmation gate is skipped; the report is posted in the thread.

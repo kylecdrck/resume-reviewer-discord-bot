@@ -8,18 +8,18 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
  */
 public interface Command {
 
-	/**
-	 * @return the command definition to register with Discord
-	 */
-	CommandData command();
+    /**
+     * @return the command definition to register with Discord
+     */
+    CommandData command();
 
-	/**
-	 * @return the command name (lowercase, no slash)
-	 */
-	String name();
+    /**
+     * @return the command name (lowercase, no slash)
+     */
+    String name();
 
-	/**
-	 * Handles the incoming slash command event.
-	 */
-	void handle(SlashCommandInteractionEvent event);
+    /**
+     * Handles the incoming slash command event.
+     */
+    void handle(SlashCommandInteractionEvent event);
 }

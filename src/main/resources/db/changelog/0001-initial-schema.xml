@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0001-create-review" author="resume-reviewer">
+        <createTable tableName="review">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="file_hash" type="VARCHAR(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="resume_text_base64" type="CLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="report" type="CLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="overall_score" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="detailed_ratings" type="CLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="critical_blockers" type="CLOB"/>
+            <column name="strengths" type="CLOB"/>
+            <column name="recommendations" type="CLOB"/>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

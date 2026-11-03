@@ -1,0 +1,17 @@
+# Local development profile.
+#
+# Uses an in-memory H2 database that is rebuilt from the Liquibase changelog on
+# every run, so the schema is always fresh and no data persists between runs.
+#
+# Activate with:  --spring.profiles.active=local
+spring:
+  datasource:
+    url: jdbc:h2:mem:resume-reviewer;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+llm:
+  # Log the full LLM API request body (model, messages, params) for debugging.
+  log-request: true
+  log-response: true

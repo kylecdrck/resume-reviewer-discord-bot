@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: resume-reviewer
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+discord:
+  enabled: ${DISCORD_ENABLED:true}
+  token: ${DISCORD_TOKEN:}
+
+llm:
+  base-url: ${LLM_BASE_URL:https://api.openai.com/v1}
+  api-key: ${LLM_API_KEY:}
+  model: ${LLM_MODEL:auto}
+  temperature: 0.3
+  timeout-seconds: ${LLM_TIMEOUT_SECONDS:120}
+  reasoning-effort: ${LLM_REASONING_EFFORT:none}
+  log-request: ${LLM_LOG_REQUEST:false}
+  log-response: ${LLM_LOG_RESPONSE:false}
+  max-tokens: ${LLM_MAX_TOKENS:2000}
+
+review:
+  confirmation-timeout-seconds: ${REVIEW_CONFIRMATION_TIMEOUT_SECONDS:45}
+
+bot:
+  config-form-timeout-seconds: ${BOT_CONFIG_FORM_TIMEOUT_SECONDS:300}
+  config-cache-ttl-seconds: ${BOT_CONFIG_CACHE_TTL_SECONDS:60}
+
+logging:
+  level:
+    dev.pandesal.resume_reviewer: INFO
+    net.dv8tion.jda: INFO

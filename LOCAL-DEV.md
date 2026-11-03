@@ -1,6 +1,7 @@
 # Local Development Guide
 
-Two local profiles are available:
+The base config (`application.yaml`) defaults to **PostgreSQL**, so running with
+no profile connects to Postgres. Two local profiles are available:
 
 | Profile | Database | Use case |
 |---|---|---|
@@ -9,7 +10,8 @@ Two local profiles are available:
 
 ## Prerequisites
 - **Java 21** + **Maven** (or use `.\mvnw.cmd`)
-- **PostgreSQL** running locally (only for `local-tst`)
+- **PostgreSQL** running locally (for the default config and `local-tst`), or
+  set `DB_URL`/`DB_USERNAME`/`DB_PASSWORD` to point elsewhere
 
 ---
 
@@ -53,6 +55,9 @@ Available at `http://localhost:8080/h2-console` (JDBC URL `jdbc:h2:mem:resume-re
 
 ## Profile: `local-tst` (PostgreSQL)
 
+The default (no profile) config already targets PostgreSQL; this profile exists
+for explicit local testing against it.
+
 ### 1. Create the database
 ```sql
 CREATE DATABASE resume_reviewer;
@@ -81,6 +86,15 @@ java -jar target\resume-reviewer-0.0.1-SNAPSHOT.jar --spring.profiles.active=loc
 ```
 
 Liquibase creates the schema automatically on first run.
+
+---
+
+## Production
+
+No profile is set in production. The app connects to PostgreSQL via
+`DB_URL`/`DB_USERNAME`/`DB_PASSWORD` and **Liquibase runs on every startup**
+(`spring.liquibase.enabled` defaults to `true`), applying any pending changesets
+before Hibernate validates the schema. Set `LIQUIBASE_ENABLED=false` to skip it.
 
 ---
 

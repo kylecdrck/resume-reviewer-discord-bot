@@ -2,6 +2,8 @@
 #
 # Uses an in-memory H2 database that is rebuilt from the Liquibase changelog on
 # every run, so the schema is always fresh and no data persists between runs.
+# The base config (application.yaml) defaults to PostgreSQL; this profile
+# overrides the datasource back to H2.
 #
 # Activate with:  --spring.profiles.active=local
 spring:

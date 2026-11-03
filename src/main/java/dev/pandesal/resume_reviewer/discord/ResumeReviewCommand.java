@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,6 +80,21 @@ public class ResumeReviewCommand extends BaseFileCommand {
     private static final String SUBCOMMAND_CONFIG = "config";
     private static final String OPTION_ROLE_SUITABILITY = "role_suitability";
     private static final int MAX_ROLES = 5;
+
+    /**
+     * Attempts made to fetch a post's starter message before giving up.
+     */
+    private static final int MAX_START_MESSAGE_ATTEMPTS = 3;
+
+    /**
+     * Delay before the first starter-message fetch, giving Discord time to index it.
+     */
+    private static final long START_MESSAGE_DELAY_MS = 1_000;
+
+    /**
+     * Base delay between starter-message retries (multiplied by the attempt).
+     */
+    private static final long START_MESSAGE_RETRY_DELAY_MS = 1_000;
 
     private final ResumeReviewService service;
     private final RoleSuitabilityEvaluator roleSuitabilityEvaluator;
@@ -163,12 +179,35 @@ public class ResumeReviewCommand extends BaseFileCommand {
         if (!botConfigService.isChannelAllowed(forum.getId())) {
             return;
         }
+        // The starter message is often not indexed yet when the event fires, so
+        // wait briefly before the first fetch instead of racing Discord. The
+        // wait runs on the rate-limit pool, so concurrent posts are unaffected.
+        thread.getJDA().getRateLimitPool().schedule(() -> fetchStartMessage(thread, 1),
+                START_MESSAGE_DELAY_MS, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Fetches the starter message, retrying with backoff. The starter message
+     * can be briefly unavailable right after the thread is created (Discord may
+     * not have indexed it yet), which surfaces as a 404.
+     */
+    private void fetchStartMessage(ThreadChannel thread, int attempt) {
         thread.retrieveStartMessage().queue(starter -> {
             if (starter.getAuthor().isBot()) {
                 return;
             }
             handleStarterMessage(thread, starter);
-        }, error -> log.warn("Could not retrieve the starter message of post {}", thread.getId(), error));
+        }, error -> {
+            if (attempt >= MAX_START_MESSAGE_ATTEMPTS) {
+                log.warn("Giving up on the starter message of post {} after {} attempts", thread.getId(), attempt,
+                        error);
+                return;
+            }
+            log.warn("Could not retrieve the starter message of post {} (attempt {}); retrying", thread.getId(),
+                    attempt, error);
+            thread.getJDA().getRateLimitPool().schedule(() -> fetchStartMessage(thread, 1 + attempt),
+                    START_MESSAGE_RETRY_DELAY_MS * attempt, TimeUnit.MILLISECONDS);
+        });
     }
 
     private void handleStarterMessage(ThreadChannel thread, Message starter) {

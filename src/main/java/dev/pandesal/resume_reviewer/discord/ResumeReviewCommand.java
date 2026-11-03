@@ -26,6 +26,8 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.ForumChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -33,6 +35,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.IntegrationType;
 import net.dv8tion.jda.api.Permission;
 
 /**
@@ -98,6 +101,9 @@ import net.dv8tion.jda.api.Permission;
 		@Override
 		public CommandData command() {
 			return Commands.slash("resume-review", "Review a resume PDF via the LLM")
+				.setContexts(InteractionContextType.GUILD)
+				.setIntegrationTypes(IntegrationType.GUILD_INSTALL)
+				.setDefaultPermissions(DefaultMemberPermissions.ENABLED)
 				.addSubcommands(
 					new SubcommandData(SUBCOMMAND_REVIEW, "Review a resume PDF via the LLM")
 						.addOptions(

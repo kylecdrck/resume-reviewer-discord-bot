@@ -99,6 +99,19 @@ To test against PostgreSQL instead, use the `local-tst` profile — see [LOCAL-D
 
 `.github/workflows/deploy-to-prd.yml` deploys to Railway (`railway up`) using the `RAILWAY_TOKEN` secret and the `RAILWAY_SERVICE` variable in the `prd` environment.
 
+### Install the bot on a server
+
+1. In the [Discord Developer Portal](https://discord.com/developers/applications), open your application → **Installation**.
+2. Under **Install Link**, choose **Discord Provided Link**.
+3. Under **Default Install Settings → Guild Install**, add the scopes `bot` and `applications.commands`, and grant these permissions: **View Channels**, **Send Messages**, **Send Messages in Threads**, **Create Public Threads**, **Read Message History**, **Attach Files**, **Embed Links**.
+4. Under **Bot**, enable the **Message Content** privileged intent (required for auto-review).
+5. Copy the install link from the **Installation** page and open it, or build it manually:
+   `https://discord.com/oauth2/authorize?client_id=<APPLICATION_ID>&scope=bot%20applications.commands&permissions=<PERMISSIONS>`
+6. Pick the server and authorize. The bot must be running (locally or deployed) for the commands to work.
+7. As a server admin, run `/resume-review config` to allow-list the forum(s) the bot may be used in.
+
+Slash commands are registered globally on startup and can take up to an hour to appear.
+
 ## Configuration
 
 All settings are environment variables with defaults in `src/main/resources/application.yaml`.

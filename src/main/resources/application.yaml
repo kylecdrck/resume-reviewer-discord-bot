@@ -7,13 +7,12 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${PGUSER:}
     password: ${PGPASSWORD:}
-
-  hikari:
-    max-lifetime: 60000         # 60 seconds (forces graceful renewal before proxy kills it)
-    keepalive-time: 30000       # 30 seconds (aggressive pinging to keep TCP streams alive)
-    idle-timeout: 30000         # Must be equal to or less than max-lifetime if minimum-idle < max-pool-size
-    minimum-idle: 2
-    connection-test-query: "SELECT 1" # Validates health on lease; cheap for Postgres
+    hikari:
+      max-lifetime: 60000         # 60 seconds (forces graceful renewal before proxy kills it)
+      keepalive-time: 30000       # 30 seconds (aggressive pinging to keep TCP streams alive)
+      idle-timeout: 30000         # Must be equal to or less than max-lifetime if minimum-idle < max-pool-size
+      minimum-idle: 2
+      connection-test-query: "SELECT 1" # Validates health on lease; cheap for Postgres
 
   jpa:
     hibernate:

@@ -232,32 +232,32 @@ public class ResumeReviewCommand extends BaseFileCommand {
         String key = UUID.randomUUID().toString();
         log.info("Auto-review {} triggered: file={}, roles={}", key, fileName, roles);
 
-        try (var executor = executor()) {
-            executor.submit(() -> {
-                File temp = null;
-                try {
-                    byte[] fileBytes = attachment.getProxy().download().join().readAllBytes();
-                    temp = File.createTempFile("resume-", ".pdf");
-                    Files.write(temp.toPath(), fileBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-                    if (!PdfTextExtractor.hasPdfMagic(temp)) {
-                        post(thread, "**Error:** That file is not a valid PDF.");
-                        return;
-                    }
-                    runReview(key, thread, fileBytes, fileName, roles);
-                } catch (Exception e) {
-                    log.error("Auto-review {} failed", key, e);
-                    post(thread, "**Error:** could not download the file.");
-                } finally {
-                    if (temp != null) {
-                        try {
-                            Files.deleteIfExists(temp.toPath());
-                        } catch (IOException ignored) {
-                            // best-effort cleanup
-                        }
+        // The executor is a Spring bean and outlives this call, so it must not be
+        // closed here; closing it would reject every later submission.
+        executor().submit(() -> {
+            File temp = null;
+            try {
+                byte[] fileBytes = attachment.getProxy().download().join().readAllBytes();
+                temp = File.createTempFile("resume-", ".pdf");
+                Files.write(temp.toPath(), fileBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+                if (!PdfTextExtractor.hasPdfMagic(temp)) {
+                    post(thread, "**Error:** That file is not a valid PDF.");
+                    return;
+                }
+                runReview(key, thread, fileBytes, fileName, roles);
+            } catch (Exception e) {
+                log.error("Auto-review {} failed", key, e);
+                post(thread, "**Error:** could not download the file.");
+            } finally {
+                if (temp != null) {
+                    try {
+                        Files.deleteIfExists(temp.toPath());
+                    } catch (IOException ignored) {
+                        // best-effort cleanup
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
     /**

@@ -176,15 +176,18 @@ public class ResumeReviewCommand extends BaseFileCommand {
         if (!(thread.getParentChannel() instanceof ForumChannel forum)) {
             return;
         }
-        if (!botConfigService.isChannelAllowed(forum.getId())) {
-            return;
-        }
-        // The starter message is often not indexed yet when the event fires, so
-        // wait briefly before the first fetch instead of racing Discord. The
-        // wait runs on the rate-limit pool, so concurrent posts are unaffected.
-        thread.getJDA().getRateLimitPool().schedule(() -> fetchStartMessage(thread, 1),
-                START_MESSAGE_DELAY_MS, TimeUnit.MILLISECONDS);
-    }
+            // The allow-list check hits the DB on a cache miss, so it must not run on
+                    // the gateway thread. The starter message is often not indexed yet when
+                    // the event fires, so wait briefly before the first fetch instead of
+                    // racing Discord. The wait runs on the rate-limit pool, so concurrent
+                    // posts are unaffected.
+                    thread.getJDA().getRateLimitPool().schedule(() -> {
+                        if (!botConfigService.isChannelAllowed(forum.getId())) {
+                            return;
+                        }
+                        fetchStartMessage(thread, 1);
+                    }, START_MESSAGE_DELAY_MS, TimeUnit.MILLISECONDS);
+                }
 
     /**
      * Fetches the starter message, retrying with backoff. The starter message
